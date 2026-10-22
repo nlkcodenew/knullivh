@@ -11,8 +11,12 @@ FONTS_DIR = os.path.join(APP, "fonts")
 I18N_DIR = os.path.join(APP, "i18n")
 LANG_DIR = os.path.join(APP, "lang")
 LANG_VI = os.path.join(LANG_DIR, "lang-vi.xml")
+FEATURES_DIR = os.path.join(APP, "features")
+FEATURES_SRC = os.path.join(FEATURES_DIR, "es_features.cfg")
+SYS_FEATURES = "/usr/share/emulationstation/es_features.cfg"
 STATE_DIR = os.path.join(APP, "state")
 STATE_FILE = os.path.join(STATE_DIR, "state.json")
+FEATURES_BACKUP = os.path.join(STATE_DIR, "es_features.cfg.orig")
 SYS_THEMES = "/usr/share/emulationstation/themes"
 USER_THEMES = "/userdata/themes"
 LOCALE_MO = "/usr/share/locale/vi_VN/LC_MESSAGES/emulationstation2.mo"
@@ -36,6 +40,7 @@ def load_state():
             return json.load(f)
     except Exception:
         return {"copied_themes": [], "patched_themes": {}, "i18n": False,
+                "features": False,
                 "hook": False, "prev_language": None, "prev_themeset": None}
 
 def save_state(st):
@@ -203,6 +208,24 @@ def theme_strings_current(theme_dir):
     except Exception:
         return True
 
+# ---------- features (Cai dat tro choi) ----------
+# Fork ES cua Knulli KHONG dich chuoi trong es_features.cfg qua catalog
+# (da xac nhan tren may 22/10: 'REWIND' co san ban dich trong .mo ma van
+# hien tieng Anh). Cach duy nhat: thay thang file XML bang ban da dich san
+# (chi doi name/description/submenu/group, giu nguyen value/preset).
+# File goc nam o overlay /usr/share -> hook boot nap lai moi lan khoi dong.
+def features_current():
+    """True neu khong co payload, hoac file he thong da la ban dich moi nhat."""
+    if not os.path.exists(FEATURES_SRC):
+        return True
+    try:
+        with io.open(FEATURES_SRC, "rb") as f:
+            want = f.read()
+        with io.open(SYS_FEATURES, "rb") as f:
+            return f.read() == want
+    except Exception:
+        return True
+
 def install_theme_strings(theme_dir):
     d = theme_vars_dir(theme_dir)
     if not d or not os.path.exists(LANG_VI):
@@ -277,6 +300,10 @@ def scan():
                       "en": "Install Vietnamese theme menu strings"})
     units.append({"id": "i18n", "vi": "Nạp bản dịch tiếng Việt đầy đủ",
                   "en": "Install full Vietnamese translation"})
+    if not features_current():
+        units.append({"id": "features",
+                      "vi": "Dịch menu Cài đặt trò chơi (es_features)",
+                      "en": "Translate Game Settings menu (es_features)"})
     units.append({"id": "hook", "vi": "Cài hook tự nạp lại khi khởi động",
                   "en": "Install boot hook"})
     if current_language() != "vi_VN":
@@ -345,6 +372,16 @@ def do_i18n():
     st["i18n"] = True
     save_state(st)
 
+def do_features():
+    if not DRY:
+        os.makedirs(STATE_DIR, exist_ok=True)
+        if not os.path.exists(FEATURES_BACKUP) and os.path.exists(SYS_FEATURES):
+            shutil.copy2(SYS_FEATURES, FEATURES_BACKUP)
+        shutil.copy2(FEATURES_SRC, SYS_FEATURES)
+    st = load_state()
+    st["features"] = True
+    save_state(st)
+
 def do_lang():
     st = load_state()
     if st.get("prev_language") is None:
@@ -383,7 +420,8 @@ def do_theme_strings():
 
 APPLY = {"copy-theme": do_copy_theme, "patch-theme": do_patch_theme,
          "theme-strings": lambda: do_theme_strings(),
-         "i18n": lambda: do_i18n(), "hook": lambda: do_hook(),
+         "i18n": lambda: do_i18n(), "features": lambda: do_features(),
+         "hook": lambda: do_hook(),
          "lang": lambda: do_lang(), "themeset": lambda: do_themeset()}
 
 # ---------- rollback ----------
@@ -397,6 +435,10 @@ def rscan():
     if st.get("i18n"):
         units.append({"id": "un-i18n", "vi": "Trả lại bản dịch gốc",
                       "en": "Restore original translation"})
+    if st.get("features"):
+        units.append({"id": "un-features",
+                      "vi": "Trả menu Cài đặt trò chơi về tiếng Anh gốc",
+                      "en": "Restore original English Game Settings menu"})
     for name in st.get("copied_themes", []):
         units.append({"id": "remove-copy:%s" % name,
                       "vi": "Xoá theme %s" % name, "en": "Remove theme %s" % name})
@@ -459,6 +501,13 @@ def rb_un_i18n():
     st["i18n"] = False
     save_state(st)
 
+def rb_un_features():
+    if not DRY and os.path.exists(FEATURES_BACKUP):
+        shutil.copy2(FEATURES_BACKUP, SYS_FEATURES)
+    st = load_state()
+    st["features"] = False
+    save_state(st)
+
 def rb_un_themeset():
     st = load_state()
     prev = st.get("prev_themeset")
@@ -501,7 +550,8 @@ def rb_un_theme_strings():
 
 ROLLBACK = {"remove-copy": rb_remove_copy, "restore-theme": rb_restore_theme,
             "un-theme-strings": lambda: rb_un_theme_strings(),
-            "un-i18n": lambda: rb_un_i18n(), "un-themeset": lambda: rb_un_themeset(),
+            "un-i18n": lambda: rb_un_i18n(), "un-features": lambda: rb_un_features(),
+            "un-themeset": lambda: rb_un_themeset(),
             "un-lang": lambda: rb_un_lang(), "un-hook": lambda: rb_un_hook()}
 
 def main():

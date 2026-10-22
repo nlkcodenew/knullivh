@@ -21,13 +21,19 @@ if [ -f "$STATE/pending_themeset.txt" ]; then
 fi
 
 # 2) File dich theo trang thai
-I18N=0; HOOK=0
+I18N=0; HOOK=0; FEATURES=0
 if [ -f "$STATE/state.json" ]; then
   grep -q '"i18n": true' "$STATE/state.json" && I18N=1
   grep -q '"hook": true' "$STATE/state.json" && HOOK=1
+  grep -q '"features": true' "$STATE/state.json" && FEATURES=1
 fi
 if [ "$I18N" = "1" ]; then
   cp "$APP/i18n/emulationstation2.mo" "$MO_DIR/emulationstation2.mo" 2>/dev/null
+  # 2a) Menu Cai dat tro choi: fork ES khong dich es_features.cfg qua
+  # catalog nen phai nap ban XML da dich san (goc o overlay, mat khi reboot)
+  if [ "$FEATURES" = "1" ]; then
+    cp "$APP/features/es_features.cfg" /usr/share/emulationstation/es_features.cfg 2>/dev/null
+  fi
   # 2b) Font mac dinh noi bo cua ES (resources): ghi de bang DejaVu day du
   # (font goc thieu khoi tieng Viet 1EA0-1EF9; reboot se tu khoi phuc neu hook dung ghi)
   RSRC=/usr/share/emulationstation/resources

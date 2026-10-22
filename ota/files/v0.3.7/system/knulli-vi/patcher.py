@@ -17,6 +17,11 @@ SYS_FEATURES = "/usr/share/emulationstation/es_features.cfg"
 MANUAL_DIR = os.path.join(APP, "manual")
 MANUAL_SRC = os.path.join(MANUAL_DIR, "notice-vi.pdf")
 SYS_MANUAL = "/usr/share/knulli/doc/notice.pdf"
+ICON_SRC = os.path.join(APP, "icon", "knulliviethoa.png")
+ICON_DST_DIR = "/userdata/roms/ports/images"
+ICON_DST = os.path.join(ICON_DST_DIR, "knulliviethoa.png")
+ICON_TAG = "./images/knulliviethoa.png"
+PORTS_GAMELIST = "/userdata/roms/ports/gamelist.xml"
 STATE_DIR = os.path.join(APP, "state")
 STATE_FILE = os.path.join(STATE_DIR, "state.json")
 FEATURES_BACKUP = os.path.join(STATE_DIR, "es_features.cfg.orig")
@@ -44,7 +49,7 @@ def load_state():
             return json.load(f)
     except Exception:
         return {"copied_themes": [], "patched_themes": {}, "i18n": False,
-                "features": False, "manual": False,
+                "features": False, "manual": False, "icon": False,
                 "hook": False, "prev_language": None, "prev_themeset": None}
 
 def save_state(st):
@@ -252,6 +257,48 @@ def install_theme_strings(theme_dir):
     log("theme-strings: %s" % os.path.basename(theme_dir))
     return 1
 
+# ---------- icon trong muc Ports (gamelist) ----------
+def icon_current():
+    if not os.path.exists(ICON_DST):
+        return False
+    try:
+        with io.open(PORTS_GAMELIST, encoding="utf-8") as f:
+            return ICON_TAG in f.read()
+    except Exception:
+        return False
+
+def gamelist_set_icon(on):
+    """Gan/go the <image> cua KnulliVietHoa trong gamelist Ports.
+    ES ghi de gamelist tu RAM khi thoat -> goi luc ES dang chay chi la tam thoi;
+    boot_apply goi lai lenh nay truoc khi ES khoi dong nen trang thai se dung."""
+    entry_new = ("\t<game>\n\t\t<path>./KnulliVietHoa.sh</path>\n"
+                 "\t\t<name>KnulliVietHoa</name>\n"
+                 "\t\t<image>" + ICON_TAG + "</image>\n\t</game>\n")
+    if not os.path.exists(PORTS_GAMELIST):
+        if on and not DRY:
+            os.makedirs(os.path.dirname(PORTS_GAMELIST), exist_ok=True)
+            with io.open(PORTS_GAMELIST, "w", encoding="utf-8", newline="\n") as f:
+                f.write('<?xml version="1.0" encoding="UTF-8"?>\n<gameList>\n'
+                        + entry_new + "</gameList>\n")
+        return
+    with io.open(PORTS_GAMELIST, encoding="utf-8") as f:
+        data = f.read()
+
+    def fix(m):
+        g = re.sub(r"\s*<image>\./images/knulliviethoa\.png</image>", "", m.group(0))
+        if on:
+            g = g.replace("</game>",
+                          "\t\t<image>" + ICON_TAG + "</image>\n\t</game>")
+        return g
+
+    data2 = re.sub(r"<game>(?:(?!</game>).)*KnulliVietHoa\.sh.*?</game>",
+                   fix, data, flags=re.S)
+    if data2 == data and on and "KnulliVietHoa.sh" not in data:
+        data2 = data.replace("</gameList>", entry_new + "</gameList>")
+    if data2 != data and not DRY:
+        with io.open(PORTS_GAMELIST, "w", encoding="utf-8", newline="\n") as f:
+            f.write(data2)
+
 # ---------- xac dinh OS: CHI chay tren Knulli ----------
 def os_check():
     """Tra ve (ok, missing[]). Yeu cau DU cac dau hieu dac trung Knulli —
@@ -324,6 +371,10 @@ def scan():
         units.append({"id": "manual",
                       "vi": "Dịch sách hướng dẫn sử dụng (User Manual)",
                       "en": "Translate the User Manual"})
+    if not st.get("icon") or not icon_current():
+        units.append({"id": "icon",
+                      "vi": "Thêm icon cho app ở mục Ports",
+                      "en": "Add the app icon in Ports"})
     units.append({"id": "hook", "vi": "Cài hook tự nạp lại khi khởi động",
                   "en": "Install boot hook"})
     if current_language() != "vi_VN":
@@ -412,6 +463,16 @@ def do_manual():
     st["manual"] = True
     save_state(st)
 
+def do_icon():
+    if not DRY:
+        os.makedirs(ICON_DST_DIR, exist_ok=True)
+        if os.path.exists(ICON_SRC):
+            shutil.copy2(ICON_SRC, ICON_DST)
+        gamelist_set_icon(True)
+    st = load_state()
+    st["icon"] = True
+    save_state(st)
+
 def do_lang():
     st = load_state()
     if st.get("prev_language") is None:
@@ -451,7 +512,8 @@ def do_theme_strings():
 APPLY = {"copy-theme": do_copy_theme, "patch-theme": do_patch_theme,
          "theme-strings": lambda: do_theme_strings(),
          "i18n": lambda: do_i18n(), "features": lambda: do_features(),
-         "manual": lambda: do_manual(), "hook": lambda: do_hook(),
+         "manual": lambda: do_manual(), "icon": lambda: do_icon(),
+         "hook": lambda: do_hook(),
          "lang": lambda: do_lang(), "themeset": lambda: do_themeset()}
 
 # ---------- rollback ----------
@@ -473,6 +535,10 @@ def rscan():
         units.append({"id": "un-manual",
                       "vi": "Trả sách hướng dẫn về tiếng Anh gốc",
                       "en": "Restore original English User Manual"})
+    if st.get("icon"):
+        units.append({"id": "un-icon",
+                      "vi": "Gỡ icon của app ở mục Ports",
+                      "en": "Remove the app icon from Ports"})
     for name in st.get("copied_themes", []):
         units.append({"id": "remove-copy:%s" % name,
                       "vi": "Xoá theme %s" % name, "en": "Remove theme %s" % name})
@@ -542,6 +608,15 @@ def rb_un_features():
     st["features"] = False
     save_state(st)
 
+def rb_un_icon():
+    if not DRY:
+        gamelist_set_icon(False)
+        if os.path.exists(ICON_DST):
+            os.remove(ICON_DST)
+    st = load_state()
+    st["icon"] = False
+    save_state(st)
+
 def rb_un_manual():
     if not DRY and os.path.exists(MANUAL_BACKUP):
         shutil.copy2(MANUAL_BACKUP, SYS_MANUAL)
@@ -592,7 +667,7 @@ def rb_un_theme_strings():
 ROLLBACK = {"remove-copy": rb_remove_copy, "restore-theme": rb_restore_theme,
             "un-theme-strings": lambda: rb_un_theme_strings(),
             "un-i18n": lambda: rb_un_i18n(), "un-features": lambda: rb_un_features(),
-            "un-manual": lambda: rb_un_manual(),
+            "un-manual": lambda: rb_un_manual(), "un-icon": lambda: rb_un_icon(),
             "un-themeset": lambda: rb_un_themeset(),
             "un-lang": lambda: rb_un_lang(), "un-hook": lambda: rb_un_hook()}
 
@@ -601,6 +676,19 @@ def main():
         print("usage: patcher.py scan|apply <id>|rscan|rollback <id>")
         return 2
     cmd = sys.argv[1]
+    if cmd == "booticon":
+        # chay tu boot_apply.sh TRUOC khi ES khoi dong: hoa giai gamelist theo
+        # co state icon (them khi bat, go khi tat). Khong bao gio duoc lam hong boot.
+        try:
+            st = load_state()
+            if st.get("icon"):
+                os.makedirs(ICON_DST_DIR, exist_ok=True)
+                if os.path.exists(ICON_SRC) and not os.path.exists(ICON_DST):
+                    shutil.copy2(ICON_SRC, ICON_DST)
+            gamelist_set_icon(bool(st.get("icon")))
+        except Exception:
+            pass
+        return 0
     if cmd == "oscheck":
         ok, missing = os_check()
         print("OK 1" if ok else "OK 0")

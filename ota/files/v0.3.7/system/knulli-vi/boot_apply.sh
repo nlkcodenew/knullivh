@@ -11,6 +11,10 @@ ES_SET=/userdata/system/configs/emulationstation/es_settings.cfg
 # ES dang chay thi khong dung vao (tranh dua ghi file voi ES)
 pidof emulationstation >/dev/null 2>&1 && exit 0
 
+# 0) Icon trong muc Ports: hoa giai the <image> trong gamelist theo co state
+#    icon (phai lam truoc khi ES chay vi ES ghi de gamelist tu RAM khi thoat).
+python3 "$APP/patcher.py" booticon >/dev/null 2>&1 || true
+
 # 1) ThemeSet dang cho
 if [ -f "$STATE/pending_themeset.txt" ]; then
   T=$(cat "$STATE/pending_themeset.txt" 2>/dev/null)

@@ -217,7 +217,11 @@ def cmd_apply():
             src = os.path.join(STAGE, path)
             dst = os.path.join(ROOT, path)
             os.makedirs(os.path.dirname(dst), exist_ok=True)
-            shutil.copyfile(src, dst)
+            # ghi ra file tam roi doi ten: an toan khi file dich dang duoc
+            # chay (binary cua app / chinh script nay) - inode cu giu nguyen
+            tmp = dst + ".new"
+            shutil.copyfile(src, tmp)
+            os.replace(tmp, dst)
             if path.endswith((".py", ".sh")) or "/bin/" in path:
                 os.chmod(dst, 0o755)
             print("INSTALLED %d %d %s" % (i, len(files), path))

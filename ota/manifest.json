@@ -7,12 +7,12 @@
     },
     {
       "path": "system/knulli-vi/VERSION",
-      "sha256": "79e3f22ca37c7fdf4c29ae3648d6b008c3cb6547260a453409275470919dc674",
+      "sha256": "511a100eedfb9ea66441e5d506392dba2d8aa290f98c4c544c70ae75ec3c3396",
       "size": 6
     },
     {
       "path": "system/knulli-vi/bin/knulli-vi",
-      "sha256": "d243c4c2d0899af8d8fba1ebe531c3bc864bebe3af46a6b3431401a105be8948",
+      "sha256": "d066a1295c6a3ca0a5df6be6fd6e66be807c92842e4d2e0915b892c10d83be2b",
       "size": 227568
     },
     {
@@ -72,6 +72,6 @@
     }
   ],
   "kid": "kv1",
-  "signature": "M1gvGVJT3BSg92nny3kjW02yadDMZle-UlgIsAws0JBqLbqWMUuysbaXxU8M1PdVXLKb6IzhMIva2djoz-g6DQ",
-  "version": "0.3.1"
+  "signature": "pxhch2PXKDGRiwb3P3Rj0AXBDFvm7RblV4MwyriFWZaZ8gQNRUiOdHevtcBZ4xXHVtqJcGyIQ07ijYZBTyPWDQ",
+  "version": "0.3.2"
 }

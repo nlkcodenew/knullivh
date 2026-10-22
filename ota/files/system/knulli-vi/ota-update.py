@@ -24,6 +24,7 @@ import os
 import shutil
 import sys
 import time
+import urllib.error
 import urllib.request
 
 MANIFEST_URL = ("https://raw.githubusercontent.com/nlkcodenew/knullivh"
@@ -135,6 +136,8 @@ def fetch_file(url, size):
     buf = bytearray()
     last = None
     for _attempt in range(10):
+        if len(buf) >= size:
+            return bytes(buf[:size])
         try:
             headers = {"User-Agent": "knulli-vi-ota"}
             if buf:
@@ -148,15 +151,23 @@ def fetch_file(url, size):
                     if not chunk:
                         break
                     buf += chunk
-            if len(buf) >= size:
-                return bytes(buf[:size])
             # EOF som hon size: vong lap se resume bang Range
         except http.client.IncompleteRead as e:
             if e.partial:
                 buf += e.partial
             last = e
+        except urllib.error.HTTPError as e:
+            last = e
+            if e.code == 416:
+                # Range vuot EOF: da du byte thi xong, chua du thi ban tren
+                # server ngan hon du kien -> xoa buffer tai lai tu dau
+                if len(buf) >= size:
+                    return bytes(buf[:size])
+                buf = bytearray()
         except Exception as e:
             last = e
+        if len(buf) >= size:
+            return bytes(buf[:size])
         time.sleep(1.0)
     raise ValueError("tai khong du %d byte tu %s (loi cuoi: %s)"
                      % (size, url, last))

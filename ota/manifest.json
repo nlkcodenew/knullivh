@@ -62,8 +62,8 @@
     },
     {
       "path": "system/knulli-vi/ota-update.py",
-      "sha256": "cbe138155f9e41bafe72d56e288ac142d10f5d62b29ddc46db45d4bb8555c8d5",
-      "size": 9640
+      "sha256": "3a1a5a28f423146899bcdb090d1a2de9b663fc3a3a2d4112a9bfc2118f3413d7",
+      "size": 10076
     },
     {
       "path": "system/knulli-vi/patcher.py",
@@ -72,6 +72,6 @@
     }
   ],
   "kid": "kv1",
-  "signature": "he9iM01CiEhNOeRm2dpo_hJGAvOp5o799W4aCcQZnZ2RRcw1doEMBtcGekPlN2PhBe-_YsLnzTuEmYsXBMsSCg",
+  "signature": "6CnzC6M5J_p6N0yngx-NwNh8d7-nGtP8Y7Gkq3yYOEyifTZX6K217ix77yC2Ks_DbOWQ0J-iJNF2jXmcDvwKCw",
   "version": "0.3.2"
 }

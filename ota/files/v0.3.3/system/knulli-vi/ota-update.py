@@ -4,8 +4,10 @@
 Nguon: repo public nlkcodenew/knullivh (ota/manifest.json + ota/files/).
 Manifest duoc ky Ed25519 (kid=kv1); khoa cong khai nhung san trong file nay,
 xac thuc bang thuan toan Ed25519 thuan Python (khong phu thuoc thu vien ngoai).
-File trong manifest co duong dan tuong doi so voi /userdata
-(vi du: system/knulli-vi/bin/knulli-vi, roms/ports/KnulliVietHoa.sh).
+File trong manifest nam duoi tien to phien ban (v<version>/...), ben
+duoi tien to la duong dan tuong doi so voi /userdata (vi du:
+v0.3.2/system/knulli-vi/bin/knulli-vi). Moi ban phat hanh la mot bo URL
+bat bien rieng - khong bao gio lech the he cache CDN voi ban khac.
 
 Dung:
   python3 ota-update.py --avail   # chi kiem tra: in STATUS ..., exit 0/2/3
@@ -173,21 +175,14 @@ def fetch_file(url, size):
                      % (size, url, last))
 
 
-_CACHE_TAG = ""
-
-
 def get_manifest():
-    global _CACHE_TAG
-    # URL manifest gan token ngau nhien: ep CDN tra ban moi nhat o goc,
-    # tranh lech the he giua manifest va file (cache tung duong dan rieng).
-    raw = fetch(MANIFEST_URL + "?r=" + str(time.time_ns()))
+    raw = fetch(MANIFEST_URL)
     m = json.loads(raw.decode("utf-8"))
     if m.get("kid") != KID:
         raise ValueError("kid khong khop: %s" % m.get("kid"))
     body_obj = {"files": m["files"], "kid": m["kid"], "version": m["version"]}
     body = json.dumps(body_obj, separators=(",", ":"), sort_keys=True,
                       ensure_ascii=False).encode("utf-8")
-    _CACHE_TAG = hashlib.sha256(body).hexdigest()[:12]
     sig_b64 = m["signature"].strip()
     sig = base64.urlsafe_b64decode(sig_b64 + "=" * (-len(sig_b64) % 4))
     if not ed25519_verify(PUBKEY, body, sig):
@@ -245,6 +240,7 @@ def cmd_apply():
         print("STATUS uptodate %s %s" % (cur, new))
         return 0
     files = m["files"]
+    prefix = "v" + new + "/"
     print("TOTAL %d" % len(files))
     sys.stdout.flush()
     shutil.rmtree(STAGE, ignore_errors=True)
@@ -252,19 +248,26 @@ def cmd_apply():
     try:
         for i, ent in enumerate(files, 1):
             path = ent["path"]
-            if path.startswith("/") or ".." in path.split("/"):
-                raise ValueError("duong dan khong an toan: %s" % path)
-            data = fetch_file(FILES_BASE + path + "?v=" + _CACHE_TAG,
-                              ent["size"])
+            # chap nhan ca manifest layout phang (doi cu, co the con trong
+            # cache CDN) lan layout tien to phien ban: deu cai dung cho.
+            rel = path[len(prefix):] if path.startswith(prefix) else path
+            if rel.startswith("/") or ".." in rel.split("/"):
+                raise ValueError("duong dan khong an toan: %s" % rel)
+            try:
+                data = fetch_file(FILES_BASE + path, ent["size"])
+            except Exception:
+                # phong khi mot muc cache bi loi: thu bang URL moi nguyen
+                data = fetch_file(FILES_BASE + path + "?r=" +
+                                  str(time.time_ns()), ent["size"])
             if len(data) != ent["size"]:
-                raise ValueError("size sai: %s" % path)
+                raise ValueError("size sai: %s" % rel)
             if hashlib.sha256(data).hexdigest() != ent["sha256"]:
-                raise ValueError("sha256 sai: %s" % path)
-            dest = os.path.join(STAGE, path)
+                raise ValueError("sha256 sai: %s" % rel)
+            dest = os.path.join(STAGE, rel)
             os.makedirs(os.path.dirname(dest), exist_ok=True)
             with open(dest, "wb") as f:
                 f.write(data)
-            print("PROGRESS %d %d %s" % (i, len(files), path))
+            print("PROGRESS %d %d %s" % (i, len(files), rel))
             sys.stdout.flush()
     except Exception as e:
         log("apply LOI tai: %s" % e)
@@ -274,18 +277,19 @@ def cmd_apply():
     # Tat ca da xac thuc xong -> cai de
     try:
         for i, ent in enumerate(files, 1):
-            path = ent["path"]
-            src = os.path.join(STAGE, path)
-            dst = os.path.join(ROOT, path)
+            p = ent["path"]
+            rel = p[len(prefix):] if p.startswith(prefix) else p
+            src = os.path.join(STAGE, rel)
+            dst = os.path.join(ROOT, rel)
             os.makedirs(os.path.dirname(dst), exist_ok=True)
             # ghi ra file tam roi doi ten: an toan khi file dich dang duoc
             # chay (binary cua app / chinh script nay) - inode cu giu nguyen
             tmp = dst + ".new"
             shutil.copyfile(src, tmp)
             os.replace(tmp, dst)
-            if path.endswith((".py", ".sh")) or "/bin/" in path:
+            if rel.endswith((".py", ".sh")) or "/bin/" in rel:
                 os.chmod(dst, 0o755)
-            print("INSTALLED %d %d %s" % (i, len(files), path))
+            print("INSTALLED %d %d %s" % (i, len(files), rel))
             sys.stdout.flush()
     except Exception as e:
         log("apply LOI cai dat: %s" % e)

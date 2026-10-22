@@ -1,77 +1,77 @@
 {
   "files": [
     {
-      "path": "v0.3.2/roms/ports/KnulliVietHoa.sh",
+      "path": "v0.3.3/roms/ports/KnulliVietHoa.sh",
       "sha256": "51a7b07da2fba85e98a3d4a071dfda45c7cb66c453f717e5e604a6a2c0e352e9",
       "size": 196
     },
     {
-      "path": "v0.3.2/system/knulli-vi/VERSION",
-      "sha256": "511a100eedfb9ea66441e5d506392dba2d8aa290f98c4c544c70ae75ec3c3396",
+      "path": "v0.3.3/system/knulli-vi/VERSION",
+      "sha256": "a0dc8325e2fbe558e09bf7d61260ca378151b0a3f875dd8b46ecd3693e34c10b",
       "size": 6
     },
     {
-      "path": "v0.3.2/system/knulli-vi/bin/knulli-vi",
-      "sha256": "f003a5e215766d3c0547a181af315f5a8b758510bcbbd8cd4204b19389cc89a1",
+      "path": "v0.3.3/system/knulli-vi/bin/knulli-vi",
+      "sha256": "7a40dda6084fb0303172c89fa93aa40e3d768ab1c1d8f81eb786f57a7cac7165",
       "size": 227568
     },
     {
-      "path": "v0.3.2/system/knulli-vi/boot_apply.sh",
+      "path": "v0.3.3/system/knulli-vi/boot_apply.sh",
       "sha256": "5224f972dcce8552261eefe40a24de4d5d0a0071415efca064f42f7827f754f8",
       "size": 2104
     },
     {
-      "path": "v0.3.2/system/knulli-vi/fonts/DejaVuSans-Bold.ttf",
+      "path": "v0.3.3/system/knulli-vi/fonts/DejaVuSans-Bold.ttf",
       "sha256": "e6476c1b80502924294eed40894c5b18e06c181444ca953e5334262df9c27724",
       "size": 705684
     },
     {
-      "path": "v0.3.2/system/knulli-vi/fonts/DejaVuSans-BoldOblique.ttf",
+      "path": "v0.3.3/system/knulli-vi/fonts/DejaVuSans-BoldOblique.ttf",
       "sha256": "eb436dca0c2594b73d8b603b892e374fdfd8d885d25ffb4f18df4c4c0b49e50f",
       "size": 643292
     },
     {
-      "path": "v0.3.2/system/knulli-vi/fonts/DejaVuSans-Oblique.ttf",
+      "path": "v0.3.3/system/knulli-vi/fonts/DejaVuSans-Oblique.ttf",
       "sha256": "4af75fa16ee6d3ad43e1ecec41862c24954af26a55c6bb1ebb27bd486a50f5f4",
       "size": 635416
     },
     {
-      "path": "v0.3.2/system/knulli-vi/fonts/DejaVuSans.ttf",
+      "path": "v0.3.3/system/knulli-vi/fonts/DejaVuSans.ttf",
       "sha256": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
       "size": 757076
     },
     {
-      "path": "v0.3.2/system/knulli-vi/fonts/DejaVuSansCondensed-Bold.ttf",
+      "path": "v0.3.3/system/knulli-vi/fonts/DejaVuSansCondensed-Bold.ttf",
       "sha256": "38098d0b8edd8430a0f53fb2831b5d36037563a998a620d3c87a4d7591766d20",
       "size": 665028
     },
     {
-      "path": "v0.3.2/system/knulli-vi/fonts/DejaVuSansCondensed.ttf",
+      "path": "v0.3.3/system/knulli-vi/fonts/DejaVuSansCondensed.ttf",
       "sha256": "8550cd5ca1acb65a8fc7877c46939cd0b4d909f8e7bc1e24716873d918c5e549",
       "size": 680264
     },
     {
-      "path": "v0.3.2/system/knulli-vi/i18n/emulationstation2.mo",
+      "path": "v0.3.3/system/knulli-vi/i18n/emulationstation2.mo",
       "sha256": "66e03012ef34151029c0bc2926f9c39e450138d3355d04fee0d1028df37f828b",
       "size": 92503
     },
     {
-      "path": "v0.3.2/system/knulli-vi/i18n/emulationstation2.pristine.mo",
+      "path": "v0.3.3/system/knulli-vi/i18n/emulationstation2.pristine.mo",
       "sha256": "01b5b21bc7844b49ac258c5567675892b445ccc61f3b95eabf600a0ead1d7487",
       "size": 73285
     },
     {
-      "path": "v0.3.2/system/knulli-vi/ota-update.py",
-      "sha256": "a1326505e55f69c1892ae6c2e3703a06d03313a0f21efbaf050d3fbd6ad5c73a",
-      "size": 10333
+      "path": "v0.3.3/system/knulli-vi/ota-update.py",
+      "sha256": "00af461bee56ac033812f7b21f6e0185191f5d27ec28fcb2b3d486fb32a338a7",
+      "size": 10447
     },
     {
-      "path": "v0.3.2/system/knulli-vi/patcher.py",
+      "path": "v0.3.3/system/knulli-vi/patcher.py",
       "sha256": "78971ded825e0f998867d5174965dbcf4cbcd17c382e5daffff82f55c4b31aaf",
       "size": 18305
     }
   ],
   "kid": "kv1",
-  "signature": "LX083CDNakCiDIA2OezQPFwI8voEUiHb4XVPQxf3wePqYR9HAMNtCHnShaTCR3RuUijt8puRUnfTUi6aSvCtDA",
-  "version": "0.3.2"
+  "signature": "Wh4Zy-wGAIy9obZjD4fOC6ZukqHNMTqvTkvY5vr3pm1iWvp3GFgbRrf09V6sPjaZNE0Q10OaFKwQBjYFOgRlCg",
+  "version": "0.3.3"
 }

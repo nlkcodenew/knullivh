@@ -9,6 +9,8 @@ import glob, io, json, os, re, shutil, subprocess, sys
 APP = os.path.dirname(os.path.abspath(__file__))
 FONTS_DIR = os.path.join(APP, "fonts")
 I18N_DIR = os.path.join(APP, "i18n")
+LANG_DIR = os.path.join(APP, "lang")
+LANG_VI = os.path.join(LANG_DIR, "lang-vi.xml")
 STATE_DIR = os.path.join(APP, "state")
 STATE_FILE = os.path.join(STATE_DIR, "state.json")
 SYS_THEMES = "/usr/share/emulationstation/themes"
@@ -171,6 +173,46 @@ def patch_fonts(theme_dir, backup_root):
         log("font: %s" % rel)
     return n
 
+# ---------- theme strings (chu tieng Viet cho menu chu de) ----------
+# ES cua Knulli viet hoa chuoi khi hien thi bang ham loi: chuoi nguon dang
+# thuong bi hong dau (¶). File lang-vi.xml cua goi da viet hoa san cac chuoi
+# subset.* nen vuot qua duoc. ES tu nap _inc/variables/lang-<lang>.xml cua
+# theme; ta chi can dat lang-vi.xml + lang-vi_VN.xml vao theme da sao chep.
+def theme_vars_dir(theme_dir):
+    d = os.path.join(theme_dir, "_inc", "variables")
+    if os.path.isdir(d) and os.path.exists(os.path.join(d, "lang-default.xml")):
+        return d
+    return None
+
+def theme_strings_current(theme_dir):
+    """True neu theme khong dung co che lang-*.xml, hoac da co ban moi nhat."""
+    d = theme_vars_dir(theme_dir)
+    if not d or not os.path.exists(LANG_VI):
+        return True
+    try:
+        with io.open(LANG_VI, "rb") as f:
+            want = f.read()
+        for fn_ in ("lang-vi.xml", "lang-vi_VN.xml"):
+            p = os.path.join(d, fn_)
+            if not os.path.exists(p):
+                return False
+            with io.open(p, "rb") as f:
+                if f.read() != want:
+                    return False
+        return True
+    except Exception:
+        return True
+
+def install_theme_strings(theme_dir):
+    d = theme_vars_dir(theme_dir)
+    if not d or not os.path.exists(LANG_VI):
+        return 0
+    if not DRY:
+        for fn_ in ("lang-vi.xml", "lang-vi_VN.xml"):
+            shutil.copy2(LANG_VI, os.path.join(d, fn_))
+    log("theme-strings: %s" % os.path.basename(theme_dir))
+    return 1
+
 # ---------- xac dinh OS: CHI chay tren Knulli ----------
 def os_check():
     """Tra ve (ok, missing[]). Yeu cau DU cac dau hieu dac trung Knulli —
@@ -226,6 +268,13 @@ def scan():
                 units.append({"id": "patch-theme:%s" % name,
                               "vi": "Vá font theme %s" % name,
                               "en": "Patch fonts of theme %s" % name})
+    ts_targets = [os.path.join(USER_THEMES, n)
+                  for n in list(st.get("copied_themes", [])) +
+                  list(st.get("patched_themes", {}))]
+    if any(os.path.isdir(t) and not theme_strings_current(t) for t in ts_targets):
+        units.append({"id": "theme-strings",
+                      "vi": "Cài chữ tiếng Việt cho menu của theme",
+                      "en": "Install Vietnamese theme menu strings"})
     units.append({"id": "i18n", "vi": "Nạp bản dịch tiếng Việt đầy đủ",
                   "en": "Install full Vietnamese translation"})
     units.append({"id": "hook", "vi": "Cài hook tự nạp lại khi khởi động",
@@ -250,6 +299,10 @@ def do_copy_theme(name):
     backup_root = os.path.join(dst, "vi-backup-kv")
     patch_fonts(dst, backup_root)
     patch_helpsystems(dst, os.path.join(backup_root, "xml"))
+    if install_theme_strings(dst):
+        st0 = load_state()
+        st0["theme_strings"] = True
+        save_state(st0)
     st = load_state()
     if name + "-vi" not in st["copied_themes"]:
         st["copied_themes"].append(name + "-vi")
@@ -262,6 +315,7 @@ def do_patch_theme(name):
     manual = os.path.join(tdir, "_inc", "fonts", "vi-backup")
     patch_fonts(tdir, backup_root)
     patch_helpsystems(tdir, os.path.join(backup_root, "xml"))
+    install_theme_strings(tdir)
     st = load_state()
     st["patched_themes"][name] = {"backup": "vi-backup-kv",
                                   "manual_backup": os.path.isdir(manual)}
@@ -318,7 +372,17 @@ def do_themeset():
                 f.write(ts + "-vi")
     save_state(st)
 
+def do_theme_strings():
+    st = load_state()
+    for name in list(st.get("copied_themes", [])) + list(st.get("patched_themes", {})):
+        tdir = os.path.join(USER_THEMES, name)
+        if os.path.isdir(tdir):
+            install_theme_strings(tdir)
+    st["theme_strings"] = True
+    save_state(st)
+
 APPLY = {"copy-theme": do_copy_theme, "patch-theme": do_patch_theme,
+         "theme-strings": lambda: do_theme_strings(),
          "i18n": lambda: do_i18n(), "hook": lambda: do_hook(),
          "lang": lambda: do_lang(), "themeset": lambda: do_themeset()}
 
@@ -326,6 +390,10 @@ APPLY = {"copy-theme": do_copy_theme, "patch-theme": do_patch_theme,
 def rscan():
     st = load_state()
     units = []
+    if st.get("theme_strings"):
+        units.append({"id": "un-theme-strings",
+                      "vi": "Gỡ chữ tiếng Việt của menu theme",
+                      "en": "Remove Vietnamese theme menu strings"})
     if st.get("i18n"):
         units.append({"id": "un-i18n", "vi": "Trả lại bản dịch gốc",
                       "en": "Restore original translation"})
@@ -419,7 +487,20 @@ def rb_un_hook():
     st["hook"] = False
     save_state(st)
 
+def rb_un_theme_strings():
+    st = load_state()
+    for name in list(st.get("copied_themes", [])) + list(st.get("patched_themes", {})):
+        d = os.path.join(USER_THEMES, name, "_inc", "variables")
+        if not DRY and os.path.isdir(d):
+            for fn_ in ("lang-vi.xml", "lang-vi_VN.xml"):
+                p = os.path.join(d, fn_)
+                if os.path.exists(p):
+                    os.remove(p)
+    st["theme_strings"] = False
+    save_state(st)
+
 ROLLBACK = {"remove-copy": rb_remove_copy, "restore-theme": rb_restore_theme,
+            "un-theme-strings": lambda: rb_un_theme_strings(),
             "un-i18n": lambda: rb_un_i18n(), "un-themeset": lambda: rb_un_themeset(),
             "un-lang": lambda: rb_un_lang(), "un-hook": lambda: rb_un_hook()}
 

@@ -17,6 +17,7 @@ thi khong dong vao he thong.
 """
 import base64
 import hashlib
+import http.client
 import io
 import json
 import os
@@ -114,10 +115,51 @@ def ed25519_verify(pub, msg, sig):
 
 
 # ---------- tai + xac thuc manifest ----------
-def fetch(url):
-    req = urllib.request.Request(url, headers={"User-Agent": "knulli-vi-ota"})
-    with urllib.request.urlopen(req, timeout=TIMEOUT) as r:
-        return r.read()
+def fetch(url, retries=4):
+    last = None
+    for _ in range(retries):
+        try:
+            req = urllib.request.Request(url,
+                                         headers={"User-Agent": "knulli-vi-ota"})
+            with urllib.request.urlopen(req, timeout=TIMEOUT) as r:
+                return r.read()
+        except Exception as e:  # mang chap chon: thu lai vai lan
+            last = e
+            time.sleep(1.5)
+    raise last
+
+
+def fetch_file(url, size):
+    """Tai 1 file dung size byte, doc theo chunk; dut giua chung thi tai
+    tiep bang Range tu vi tri da nhan (link hotspot/ICS rat hay dut)."""
+    buf = bytearray()
+    last = None
+    for _attempt in range(10):
+        try:
+            headers = {"User-Agent": "knulli-vi-ota"}
+            if buf:
+                headers["Range"] = "bytes=%d-" % len(buf)
+            req = urllib.request.Request(url, headers=headers)
+            with urllib.request.urlopen(req, timeout=TIMEOUT) as r:
+                if buf and getattr(r, "status", 200) == 200:
+                    buf = bytearray()  # server khong ho tro Range: tai lai
+                while True:
+                    chunk = r.read(65536)
+                    if not chunk:
+                        break
+                    buf += chunk
+            if len(buf) >= size:
+                return bytes(buf[:size])
+            # EOF som hon size: vong lap se resume bang Range
+        except http.client.IncompleteRead as e:
+            if e.partial:
+                buf += e.partial
+            last = e
+        except Exception as e:
+            last = e
+        time.sleep(1.0)
+    raise ValueError("tai khong du %d byte tu %s (loi cuoi: %s)"
+                     % (size, url, last))
 
 
 def get_manifest():
@@ -194,7 +236,7 @@ def cmd_apply():
             path = ent["path"]
             if path.startswith("/") or ".." in path.split("/"):
                 raise ValueError("duong dan khong an toan: %s" % path)
-            data = fetch(FILES_BASE + path)
+            data = fetch_file(FILES_BASE + path, ent["size"])
             if len(data) != ent["size"]:
                 raise ValueError("size sai: %s" % path)
             if hashlib.sha256(data).hexdigest() != ent["sha256"]:

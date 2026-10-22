@@ -21,11 +21,12 @@ if [ -f "$STATE/pending_themeset.txt" ]; then
 fi
 
 # 2) File dich theo trang thai
-I18N=0; HOOK=0; FEATURES=0
+I18N=0; HOOK=0; FEATURES=0; MANUAL=0
 if [ -f "$STATE/state.json" ]; then
   grep -q '"i18n": true' "$STATE/state.json" && I18N=1
   grep -q '"hook": true' "$STATE/state.json" && HOOK=1
   grep -q '"features": true' "$STATE/state.json" && FEATURES=1
+  grep -q '"manual": true' "$STATE/state.json" && MANUAL=1
 fi
 if [ "$I18N" = "1" ]; then
   cp "$APP/i18n/emulationstation2.mo" "$MO_DIR/emulationstation2.mo" 2>/dev/null
@@ -33,6 +34,10 @@ if [ "$I18N" = "1" ]; then
   # catalog nen phai nap ban XML da dich san (goc o overlay, mat khi reboot)
   if [ "$FEATURES" = "1" ]; then
     cp "$APP/features/es_features.cfg" /usr/share/emulationstation/es_features.cfg 2>/dev/null
+  fi
+  # 2a2) Sach huong dan (User Manual): ban PDF tieng Viet, goc o overlay
+  if [ "$MANUAL" = "1" ]; then
+    cp "$APP/manual/notice-vi.pdf" /usr/share/knulli/doc/notice.pdf 2>/dev/null
   fi
   # 2b) Font mac dinh noi bo cua ES (resources): ghi de bang DejaVu day du
   # (font goc thieu khoi tieng Viet 1EA0-1EF9; reboot se tu khoi phuc neu hook dung ghi)

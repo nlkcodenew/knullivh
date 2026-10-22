@@ -14,9 +14,13 @@ LANG_VI = os.path.join(LANG_DIR, "lang-vi.xml")
 FEATURES_DIR = os.path.join(APP, "features")
 FEATURES_SRC = os.path.join(FEATURES_DIR, "es_features.cfg")
 SYS_FEATURES = "/usr/share/emulationstation/es_features.cfg"
+MANUAL_DIR = os.path.join(APP, "manual")
+MANUAL_SRC = os.path.join(MANUAL_DIR, "notice-vi.pdf")
+SYS_MANUAL = "/usr/share/knulli/doc/notice.pdf"
 STATE_DIR = os.path.join(APP, "state")
 STATE_FILE = os.path.join(STATE_DIR, "state.json")
 FEATURES_BACKUP = os.path.join(STATE_DIR, "es_features.cfg.orig")
+MANUAL_BACKUP = os.path.join(STATE_DIR, "notice.pdf.orig")
 SYS_THEMES = "/usr/share/emulationstation/themes"
 USER_THEMES = "/userdata/themes"
 LOCALE_MO = "/usr/share/locale/vi_VN/LC_MESSAGES/emulationstation2.mo"
@@ -40,7 +44,7 @@ def load_state():
             return json.load(f)
     except Exception:
         return {"copied_themes": [], "patched_themes": {}, "i18n": False,
-                "features": False,
+                "features": False, "manual": False,
                 "hook": False, "prev_language": None, "prev_themeset": None}
 
 def save_state(st):
@@ -226,6 +230,18 @@ def features_current():
     except Exception:
         return True
 
+def manual_current():
+    """True neu khong co payload, hoac sach huong dan he thong da la ban Viet."""
+    if not os.path.exists(MANUAL_SRC):
+        return True
+    try:
+        with io.open(MANUAL_SRC, "rb") as f:
+            want = f.read()
+        with io.open(SYS_MANUAL, "rb") as f:
+            return f.read() == want
+    except Exception:
+        return True
+
 def install_theme_strings(theme_dir):
     d = theme_vars_dir(theme_dir)
     if not d or not os.path.exists(LANG_VI):
@@ -304,6 +320,10 @@ def scan():
         units.append({"id": "features",
                       "vi": "Dịch menu Cài đặt trò chơi (es_features)",
                       "en": "Translate Game Settings menu (es_features)"})
+    if not manual_current():
+        units.append({"id": "manual",
+                      "vi": "Dịch sách hướng dẫn sử dụng (User Manual)",
+                      "en": "Translate the User Manual"})
     units.append({"id": "hook", "vi": "Cài hook tự nạp lại khi khởi động",
                   "en": "Install boot hook"})
     if current_language() != "vi_VN":
@@ -382,6 +402,16 @@ def do_features():
     st["features"] = True
     save_state(st)
 
+def do_manual():
+    if not DRY:
+        os.makedirs(STATE_DIR, exist_ok=True)
+        if not os.path.exists(MANUAL_BACKUP) and os.path.exists(SYS_MANUAL):
+            shutil.copy2(SYS_MANUAL, MANUAL_BACKUP)
+        shutil.copy2(MANUAL_SRC, SYS_MANUAL)
+    st = load_state()
+    st["manual"] = True
+    save_state(st)
+
 def do_lang():
     st = load_state()
     if st.get("prev_language") is None:
@@ -421,7 +451,7 @@ def do_theme_strings():
 APPLY = {"copy-theme": do_copy_theme, "patch-theme": do_patch_theme,
          "theme-strings": lambda: do_theme_strings(),
          "i18n": lambda: do_i18n(), "features": lambda: do_features(),
-         "hook": lambda: do_hook(),
+         "manual": lambda: do_manual(), "hook": lambda: do_hook(),
          "lang": lambda: do_lang(), "themeset": lambda: do_themeset()}
 
 # ---------- rollback ----------
@@ -439,6 +469,10 @@ def rscan():
         units.append({"id": "un-features",
                       "vi": "Trả menu Cài đặt trò chơi về tiếng Anh gốc",
                       "en": "Restore original English Game Settings menu"})
+    if st.get("manual"):
+        units.append({"id": "un-manual",
+                      "vi": "Trả sách hướng dẫn về tiếng Anh gốc",
+                      "en": "Restore original English User Manual"})
     for name in st.get("copied_themes", []):
         units.append({"id": "remove-copy:%s" % name,
                       "vi": "Xoá theme %s" % name, "en": "Remove theme %s" % name})
@@ -508,6 +542,13 @@ def rb_un_features():
     st["features"] = False
     save_state(st)
 
+def rb_un_manual():
+    if not DRY and os.path.exists(MANUAL_BACKUP):
+        shutil.copy2(MANUAL_BACKUP, SYS_MANUAL)
+    st = load_state()
+    st["manual"] = False
+    save_state(st)
+
 def rb_un_themeset():
     st = load_state()
     prev = st.get("prev_themeset")
@@ -551,6 +592,7 @@ def rb_un_theme_strings():
 ROLLBACK = {"remove-copy": rb_remove_copy, "restore-theme": rb_restore_theme,
             "un-theme-strings": lambda: rb_un_theme_strings(),
             "un-i18n": lambda: rb_un_i18n(), "un-features": lambda: rb_un_features(),
+            "un-manual": lambda: rb_un_manual(),
             "un-themeset": lambda: rb_un_themeset(),
             "un-lang": lambda: rb_un_lang(), "un-hook": lambda: rb_un_hook()}
 

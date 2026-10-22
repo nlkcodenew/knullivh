@@ -7,18 +7,18 @@
     },
     {
       "path": "system/knulli-vi/VERSION",
-      "sha256": "d5d1d767be9218f02ebda081a83a2b2fede85055e910e5a94a09329966486fcc",
+      "sha256": "6d7ff4be0be7debf12dc50067f10057f5d85815ef89e542bc291bc2c893cbbbb",
       "size": 6
     },
     {
       "path": "system/knulli-vi/bin/knulli-vi",
-      "sha256": "536c5d1bdba9662de6665e4df7d6c07a3c158a0b64a750dcedd952c5a1ee3fe3",
+      "sha256": "787280736304d892b8c6189332c9de5e3b9170ebc4f13fbad0d085290d06701a",
       "size": 227568
     },
     {
       "path": "system/knulli-vi/boot_apply.sh",
-      "sha256": "1105e947eee131fd5f2e5337efe0b109ff75ee1f762bda2ba56d68da95ffcdd4",
-      "size": 2459
+      "sha256": "c02d3e803b03fc7e3e287f11df7740127d2163d0e1b7dd88c8256492f27df6eb",
+      "size": 2717
     },
     {
       "path": "system/knulli-vi/features/es_features.cfg",
@@ -57,8 +57,8 @@
     },
     {
       "path": "system/knulli-vi/i18n/emulationstation2.mo",
-      "sha256": "7c04267efda06f52cf8af9e7f31dbf7bf6a1c7b9d291a44c37e70a22fe5a5ab4",
-      "size": 92503
+      "sha256": "2408d63c525a6ad1ae098582def4a8c2e25808722f8967a74ec6ef83f7a7c98f",
+      "size": 92511
     },
     {
       "path": "system/knulli-vi/i18n/emulationstation2.pristine.mo",
@@ -71,17 +71,22 @@
       "size": 3138
     },
     {
+      "path": "system/knulli-vi/manual/notice-vi.pdf",
+      "sha256": "4ede8ef2a616916de9bcfed191e28ca7b683fd14a444016c2bd4706df6988533",
+      "size": 1202985
+    },
+    {
       "path": "system/knulli-vi/ota-update.py",
       "sha256": "00af461bee56ac033812f7b21f6e0185191f5d27ec28fcb2b3d486fb32a338a7",
       "size": 10447
     },
     {
       "path": "system/knulli-vi/patcher.py",
-      "sha256": "122a0809d5ed757a98d8f1d478e80313503bc26e17421fd5e1562f0293a0df4e",
-      "size": 23775
+      "sha256": "d2057f9db2c08e33265a034b7d85f33c3d2308ea0e8e89150ccfcfb4cd1b37a7",
+      "size": 25374
     }
   ],
   "kid": "kv1",
-  "signature": "GlXt1h3JPMHcUkUBtzedInhiLO4iD4K-23qh4DdYtn3VxE-NF38QhqopFW0BNDp5okqNxpGymxqcb_Wo6wdUBA",
-  "version": "0.3.5"
+  "signature": "AXRkyxF5bx3ikH6DcULeTYe1Pad9sGCaV3MlAHWf7AJjMtVGemaySljLV1nhbJJsta4OQsLW0y3GflNtdJqDCw",
+  "version": "0.3.6"
 }

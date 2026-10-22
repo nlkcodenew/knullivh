@@ -162,14 +162,21 @@ def fetch_file(url, size):
                      % (size, url, last))
 
 
+_CACHE_TAG = ""
+
+
 def get_manifest():
-    raw = fetch(MANIFEST_URL)
+    global _CACHE_TAG
+    # URL manifest gan token ngau nhien: ep CDN tra ban moi nhat o goc,
+    # tranh lech the he giua manifest va file (cache tung duong dan rieng).
+    raw = fetch(MANIFEST_URL + "?r=" + str(time.time_ns()))
     m = json.loads(raw.decode("utf-8"))
     if m.get("kid") != KID:
         raise ValueError("kid khong khop: %s" % m.get("kid"))
     body_obj = {"files": m["files"], "kid": m["kid"], "version": m["version"]}
     body = json.dumps(body_obj, separators=(",", ":"), sort_keys=True,
                       ensure_ascii=False).encode("utf-8")
+    _CACHE_TAG = hashlib.sha256(body).hexdigest()[:12]
     sig_b64 = m["signature"].strip()
     sig = base64.urlsafe_b64decode(sig_b64 + "=" * (-len(sig_b64) % 4))
     if not ed25519_verify(PUBKEY, body, sig):
@@ -236,7 +243,8 @@ def cmd_apply():
             path = ent["path"]
             if path.startswith("/") or ".." in path.split("/"):
                 raise ValueError("duong dan khong an toan: %s" % path)
-            data = fetch_file(FILES_BASE + path, ent["size"])
+            data = fetch_file(FILES_BASE + path + "?v=" + _CACHE_TAG,
+                              ent["size"])
             if len(data) != ent["size"]:
                 raise ValueError("size sai: %s" % path)
             if hashlib.sha256(data).hexdigest() != ent["sha256"]:

@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # patcher.py - engine Viet hoa Knulli (chay tren may, python3).
 # Lenh: scan | apply <id> | rscan | rollback <id>
-#        themes | install-theme <name>
 # Moi "unit" la mot buoc cong viec; app SDL goi tung unit de tinh % chinh xac.
 # Nguyen tac: chi ghi vao /userdata (ben vung) + file .mo trong overlay
 # (co hook custom.sh nap lai moi boot). Font goc luon duoc sao luu.
@@ -280,101 +279,6 @@ def font_report():
         except Exception:
             pass
     return rows
-
-# ---------- cai themes cua chung ta ----------
-# Danh sach theme do nhom tu lam, dang tren GitHub public. Them theme moi
-# chi can them 1 dong vao day (repo phai co file VERSION o goc de app so
-# ban). Cai = tai tarball GitHub, giai nen thang vao /userdata/themes/<ten>
-# (che de, khong tao hau to) — ES khong can restart khi cai, chi can chon
-# theme trong UI Settings > Theme Set (ES tu restart khi doi theme).
-OUR_THEMES = [
-    {"name": "MUSE-AI", "repo": "nlkcodenew/MUSE-AI", "branch": "main"},
-]
-
-def _fetch_text(url, timeout=20):
-    req = urllib.request.Request(url, headers={"User-Agent": "KnulliVietHoa"})
-    with urllib.request.urlopen(req, timeout=timeout) as r:
-        return r.read().decode("utf-8", "replace").strip()
-
-def _installed_version(dest):
-    try:
-        with io.open(os.path.join(dest, "VERSION"),
-                     encoding="utf-8") as f:
-            return f.read().strip()
-    except Exception:
-        return ""
-
-def themes_list():
-    """Tra ve danh sach {name, installed, latest, vi, en} cho tung theme
-    cua chung ta; latest rong = khong lay duoc ban moi (loi mang)."""
-    rows = []
-    for t in OUR_THEMES:
-        dest = os.path.join(USER_THEMES, t["name"])
-        inst = ""
-        if os.path.isfile(os.path.join(dest, "theme.xml")):
-            inst = _installed_version(dest)
-        try:
-            latest = _fetch_text(
-                "https://raw.githubusercontent.com/%s/%s/VERSION"
-                % (t["repo"], t["branch"]), timeout=15)
-        except Exception:
-            latest = ""
-        if not inst:
-            vi, en = "Chưa cài", "Not installed"
-        elif latest and inst != latest:
-            vi = "Có bản mới %s (đang dùng %s)" % (latest, inst)
-            en = "Update available %s (installed %s)" % (latest, inst)
-        elif inst:
-            vi, en = "Đã cài %s" % inst, "Installed %s" % inst
-        else:
-            vi, en = "Đã cài (không rõ bản)", "Installed (unknown version)"
-        rows.append({"name": t["name"], "installed": inst,
-                     "latest": latest, "vi": vi, "en": en})
-    return rows
-
-def install_theme(name):
-    """Tai tarball GitHub cua theme, verify co theme.xml roi che de vao
-    /userdata/themes/<name>. Tra ve ban da cai. Loi -> raise."""
-    t = next((x for x in OUR_THEMES if x["name"] == name), None)
-    if t is None:
-        raise ValueError("unknown theme: " + name)
-    dest = os.path.join(USER_THEMES, name)
-    url = ("https://codeload.github.com/%s/tar.gz/refs/heads/%s"
-           % (t["repo"], t["branch"]))
-    if DRY:
-        print("DRY install-theme %s <- %s -> %s" % (name, url, dest))
-        return ""
-    tmp = tempfile.mkdtemp(prefix="knvi-theme-")
-    try:
-        req = urllib.request.Request(url, headers={"User-Agent": "KnulliVietHoa"})
-        with urllib.request.urlopen(req, timeout=120) as r:
-            data = r.read()
-        tf = tarfile.open(fileobj=io.BytesIO(data), mode="r:gz")
-        top, members = None, []
-        for m in tf.getmembers():
-            parts = m.name.split("/")
-            if len(parts) < 2:
-                continue
-            if top is None:
-                top = parts[0]
-            if parts[0] != top or m.issym() or m.islnk():
-                continue
-            rest = parts[1:]
-            if not rest or ".." in rest:
-                continue
-            m.name = "/".join(rest)
-            members.append(m)
-        tf.extractall(tmp, members=members)
-        if not os.path.isfile(os.path.join(tmp, "theme.xml")):
-            raise ValueError("tarball khong co theme.xml")
-        if os.path.isdir(dest):
-            shutil.rmtree(dest)
-        shutil.move(tmp, dest)
-        ver = _installed_version(dest)
-        log("DONE install-theme %s %s" % (name, ver))
-        return ver
-    finally:
-        shutil.rmtree(tmp, ignore_errors=True)
 
 # ---------- helpsystem ----------
 HELP_RE = re.compile(r"(<helpsystem[^>]*>)(.*?)(</helpsystem>)", re.S)
@@ -1300,8 +1204,7 @@ ROLLBACK = {"remove-copy": rb_remove_copy, "restore-theme": rb_restore_theme,
 def main():
     if len(sys.argv) < 2:
         print("usage: patcher.py scan|apply <id>|rscan|rollback <id>|"
-              "uscan|uapply <id>|urevert <id>|fontreport|"
-              "themes|install-theme <name>")
+              "uscan|uapply <id>|urevert <id>|fontreport")
         return 2
     cmd = sys.argv[1]
     if cmd == "booticon":
@@ -1348,35 +1251,15 @@ def main():
             (u["apply"] if cmd == "uapply" else u["revert"])()
             log("DONE " + sys.argv[2])
         return 0
-    if cmd in ("scan", "rscan", "fontreport", "themes",
-               "apply", "rollback", "install-theme"):
+    if cmd in ("scan", "rscan", "fontreport",
+               "apply", "rollback"):
         ok, missing = os_check()
         if not ok:
             print("TU CHOI: khong phai Knulli OS (%s)" % "; ".join(missing),
                   file=sys.stderr)
-            if cmd in ("scan", "rscan", "fontreport", "themes"):
+            if cmd in ("scan", "rscan", "fontreport"):
                 return 0  # danh sach rong = app khong co viec de chay
             return 3
-    if cmd == "themes":
-        rows = themes_list()
-        if os.environ.get("KNVI_PLAIN"):
-            for r in rows:
-                print("%s\t%s\t%s\t%s\t%s" % (r["name"], r["installed"],
-                                              r["latest"], r["vi"], r["en"]))
-        else:
-            print(json.dumps(rows, ensure_ascii=False))
-        return 0
-    if cmd == "install-theme":
-        if len(sys.argv) < 3:
-            print("usage: patcher.py install-theme <name>")
-            return 2
-        try:
-            ver = install_theme(sys.argv[2])
-        except Exception as e:
-            print("install-theme loi: %s" % e, file=sys.stderr)
-            return 1
-        print("DONE %s %s" % (sys.argv[2], ver))
-        return 0
     if cmd == "fontreport":
         rows = font_report()
         if os.environ.get("KNVI_PLAIN"):

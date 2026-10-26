@@ -1,237 +1,242 @@
 {
   "files": [
     {
-      "path": "v1.0.1/roms/tools/KnulliVietHoa.sh",
+      "path": "v1.0.2/roms/tools/KnulliVietHoa.sh",
       "sha256": "51a7b07da2fba85e98a3d4a071dfda45c7cb66c453f717e5e604a6a2c0e352e9",
       "size": 196
     },
     {
-      "path": "v1.0.1/roms/tools/images/knulliviethoa.png",
+      "path": "v1.0.2/roms/tools/images/knulliviethoa.png",
       "sha256": "b84fb6787634c9ff4c3aa872f6d1b2d2a788ec05899ebda9b9da156043a18859",
       "size": 152022
     },
     {
-      "path": "v1.0.1/system/knulli-vi/VERSION",
-      "sha256": "d51e6ec94058554a84558a5b402ee6ef5fdf5455e35c902feda61cda8752943a",
+      "path": "v1.0.2/system/knulli-vi/VERSION",
+      "sha256": "bfec2e34583ada7e6af2cb73993fb75a3f7147a6c943e5ff5f5c4294fc577b90",
       "size": 5
     },
     {
-      "path": "v1.0.1/system/knulli-vi/bin/knulli-vi",
-      "sha256": "6ca417002875a7bf059134ba144f4297c17672c70d948b26eeb3393f4af978c9",
-      "size": 248048
+      "path": "v1.0.2/system/knulli-vi/bin/knulli-vi",
+      "sha256": "c49e05fc37ac95106c2cad011085c93e02a24d74d53eebb0ab575145466ddcce",
+      "size": 256240
     },
     {
-      "path": "v1.0.1/system/knulli-vi/boot_apply.sh",
-      "sha256": "0d675810bf39d50e44034f6fce21a9f3567a30d25f97ef9bac380d777c76c7a3",
-      "size": 3331
+      "path": "v1.0.2/system/knulli-vi/boot_apply.sh",
+      "sha256": "d1e3a5358201c44595d03eff9c7b767f84248ece3cba5527dea5a98e29ce5c24",
+      "size": 4449
     },
     {
-      "path": "v1.0.1/system/knulli-vi/features/es_features.cfg",
+      "path": "v1.0.2/system/knulli-vi/features/es_features.cfg",
       "sha256": "70cc3d4acee9b11694231e96d881d896694c275599c9d6a63129ac8e81ffa743",
       "size": 698537
     },
     {
-      "path": "v1.0.1/system/knulli-vi/fonts-extra/inter-Bold.ttf",
+      "path": "v1.0.2/system/knulli-vi/fonts-extra/inter-Bold.ttf",
       "sha256": "01db2fed11f7dd21469aabd118ed8b8d03c66cd31fc97ecfe314f6fbd2bab79f",
       "size": 343104
     },
     {
-      "path": "v1.0.1/system/knulli-vi/fonts-extra/inter-OFL.txt",
+      "path": "v1.0.2/system/knulli-vi/fonts-extra/inter-OFL.txt",
       "sha256": "5b9321a4298cfeb6b34354164a1c3afc3db114569984c502b9b35d988fd58c57",
       "size": 4377
     },
     {
-      "path": "v1.0.1/system/knulli-vi/fonts-extra/inter-Regular.ttf",
+      "path": "v1.0.2/system/knulli-vi/fonts-extra/inter-Regular.ttf",
       "sha256": "6f77d8d3f0bd9d520e78dc59878d020e51c8f1f1a19f6a3177ab1c7b730e017b",
       "size": 341396
     },
     {
-      "path": "v1.0.1/system/knulli-vi/fonts-extra/lato-Bold.ttf",
+      "path": "v1.0.2/system/knulli-vi/fonts-extra/lato-Bold.ttf",
       "sha256": "8a0aace75d33794eece4b28187bfc1df0bbd2888b5d8a56e01788c8d65d16be1",
       "size": 656544
     },
     {
-      "path": "v1.0.1/system/knulli-vi/fonts-extra/lato-OFL.txt",
+      "path": "v1.0.2/system/knulli-vi/fonts-extra/lato-OFL.txt",
       "sha256": "74ba064d03f1f1c4a952da936c3eb71866c34404916734de3cae73b34357e59e",
       "size": 4407
     },
     {
-      "path": "v1.0.1/system/knulli-vi/fonts-extra/lato-Regular.ttf",
+      "path": "v1.0.2/system/knulli-vi/fonts-extra/lato-Regular.ttf",
       "sha256": "d636e4683231f931eda222d588e944d082bfd3bdba02f928bee461c0f185b251",
       "size": 656568
     },
     {
-      "path": "v1.0.1/system/knulli-vi/fonts-extra/montserrat-Bold.ttf",
+      "path": "v1.0.2/system/knulli-vi/fonts-extra/montserrat-Bold.ttf",
       "sha256": "7cdcc2e092a8a7f390a37ad9fce446b1b1a34c8021bb5a707785fc5588bf4af7",
       "size": 374640
     },
     {
-      "path": "v1.0.1/system/knulli-vi/fonts-extra/montserrat-OFL.txt",
+      "path": "v1.0.2/system/knulli-vi/fonts-extra/montserrat-OFL.txt",
       "sha256": "8b7141c03fa4f8d44e6345d5d4931709290f0f67875e452e95ac1fd3a027802e",
       "size": 4400
     },
     {
-      "path": "v1.0.1/system/knulli-vi/fonts-extra/montserrat-Regular.ttf",
+      "path": "v1.0.2/system/knulli-vi/fonts-extra/montserrat-Regular.ttf",
       "sha256": "a7e6c0f4b823cc4171cc47927ee2d95d208e152b0859cac8bde22eef53b24c84",
       "size": 374500
     },
     {
-      "path": "v1.0.1/system/knulli-vi/fonts-extra/notosans-Bold.ttf",
+      "path": "v1.0.2/system/knulli-vi/fonts-extra/notosans-Bold.ttf",
       "sha256": "acbdd73f0238c55284f29dde35c1254f50ed0504c091dc2ca5b65aa2f1556690",
       "size": 648316
     },
     {
-      "path": "v1.0.1/system/knulli-vi/fonts-extra/notosans-OFL.txt",
+      "path": "v1.0.2/system/knulli-vi/fonts-extra/notosans-OFL.txt",
       "sha256": "cee9892f9f0cc8fe882c9e9537ee6a89621d86ee7ceaf70b02e2b2b1c25c061a",
       "size": 4396
     },
     {
-      "path": "v1.0.1/system/knulli-vi/fonts-extra/notosans-Regular.ttf",
+      "path": "v1.0.2/system/knulli-vi/fonts-extra/notosans-Regular.ttf",
       "sha256": "8f47dbb6f5cf9863faef045896e05642da96b36e5b92ff63917329e0d4d6ad04",
       "size": 646160
     },
     {
-      "path": "v1.0.1/system/knulli-vi/fonts-extra/opensans-Bold.ttf",
+      "path": "v1.0.2/system/knulli-vi/fonts-extra/opensans-Bold.ttf",
       "sha256": "ffc51e069d8051a0bb3cff1669fdd77a658de1487ff6b1d3d72fe556460be110",
       "size": 130504
     },
     {
-      "path": "v1.0.1/system/knulli-vi/fonts-extra/opensans-OFL.txt",
+      "path": "v1.0.2/system/knulli-vi/fonts-extra/opensans-OFL.txt",
       "sha256": "fbbbcfef55318de350562559b671360de6d597112ecc5c73881b05092db89602",
       "size": 4389
     },
     {
-      "path": "v1.0.1/system/knulli-vi/fonts-extra/opensans-Regular.ttf",
+      "path": "v1.0.2/system/knulli-vi/fonts-extra/opensans-Regular.ttf",
       "sha256": "0ee92509f2cf916abf3cbb93cd79b2497e4bcb4915d09bb2cf6e6015389bb327",
       "size": 130484
     },
     {
-      "path": "v1.0.1/system/knulli-vi/fonts-extra/oswald-Bold.ttf",
+      "path": "v1.0.2/system/knulli-vi/fonts-extra/oswald-Bold.ttf",
       "sha256": "0239246525d469328b9c910f0d54a5d288e63e1b726b8824c82bb33daa181449",
       "size": 88940
     },
     {
-      "path": "v1.0.1/system/knulli-vi/fonts-extra/oswald-OFL.txt",
+      "path": "v1.0.2/system/knulli-vi/fonts-extra/oswald-OFL.txt",
       "sha256": "0fd731a904b729a4e02eaf5e8ebd06783edd9abe400e8882760160230675b652",
       "size": 4483
     },
     {
-      "path": "v1.0.1/system/knulli-vi/fonts-extra/oswald-Regular.ttf",
+      "path": "v1.0.2/system/knulli-vi/fonts-extra/oswald-Regular.ttf",
       "sha256": "91d121d332751ab51fdbb5f30277932986a6307bdea310994d477f8a47fc7f66",
       "size": 88556
     },
     {
-      "path": "v1.0.1/system/knulli-vi/fonts-extra/roboto-Bold.ttf",
+      "path": "v1.0.2/system/knulli-vi/fonts-extra/roboto-Bold.ttf",
       "sha256": "4830c54b734b637526f692d2d5c012d216542669a07cc23f946dd15c7e893ca5",
       "size": 158316
     },
     {
-      "path": "v1.0.1/system/knulli-vi/fonts-extra/roboto-OFL.txt",
+      "path": "v1.0.2/system/knulli-vi/fonts-extra/roboto-OFL.txt",
       "sha256": "061402327a96aadb0bfb694a960ed289ecd38d383e396243831ab81feb109c41",
       "size": 4394
     },
     {
-      "path": "v1.0.1/system/knulli-vi/fonts-extra/roboto-Regular.ttf",
+      "path": "v1.0.2/system/knulli-vi/fonts-extra/roboto-Regular.ttf",
       "sha256": "f6971fc42e295979b16162e9468016c2c77caa17a3f5d199a42fbc3db7769a8d",
       "size": 157584
     },
     {
-      "path": "v1.0.1/system/knulli-vi/fonts-extra/saira-Bold.ttf",
+      "path": "v1.0.2/system/knulli-vi/fonts-extra/saira-Bold.ttf",
       "sha256": "cf40dfad9e6dfdd335af0445a32cb4a02b98b00e61a0154e5398c61b8b84fb00",
       "size": 83004
     },
     {
-      "path": "v1.0.1/system/knulli-vi/fonts-extra/saira-OFL.txt",
+      "path": "v1.0.2/system/knulli-vi/fonts-extra/saira-OFL.txt",
       "sha256": "f2665d4718b452b3818a877191355ac884a6b9b419d35408fe7ee487e9e8f30f",
       "size": 4386
     },
     {
-      "path": "v1.0.1/system/knulli-vi/fonts-extra/saira-Regular.ttf",
+      "path": "v1.0.2/system/knulli-vi/fonts-extra/saira-Regular.ttf",
       "sha256": "3fdb3e3dc700a000e36f724dd74204cfe0d564d3a4543242c6deb190a0d16d0c",
       "size": 83220
     },
     {
-      "path": "v1.0.1/system/knulli-vi/fonts-extra/tektur-Bold.ttf",
+      "path": "v1.0.2/system/knulli-vi/fonts-extra/tektur-Bold.ttf",
       "sha256": "0a8c3dd3b6c3444b667a74b070a2df01da4b6e4f3ed31cf45f648020d3aa2d76",
       "size": 76068
     },
     {
-      "path": "v1.0.1/system/knulli-vi/fonts-extra/tektur-OFL.txt",
+      "path": "v1.0.2/system/knulli-vi/fonts-extra/tektur-OFL.txt",
       "sha256": "ff4bb37f716836feb5038e1bf5c47e5a1946717fcfabb175086ed49f85ea47fd",
       "size": 4385
     },
     {
-      "path": "v1.0.1/system/knulli-vi/fonts-extra/tektur-Regular.ttf",
+      "path": "v1.0.2/system/knulli-vi/fonts-extra/tektur-Regular.ttf",
       "sha256": "86d0a68f42f348533bac243dd2735bb6a6794f7bd0ac79e1b9d0b89aeb0239a4",
       "size": 75776
     },
     {
-      "path": "v1.0.1/system/knulli-vi/fonts/DejaVuSans-Bold.ttf",
+      "path": "v1.0.2/system/knulli-vi/fonts/DejaVuSans-Bold.ttf",
       "sha256": "e6476c1b80502924294eed40894c5b18e06c181444ca953e5334262df9c27724",
       "size": 705684
     },
     {
-      "path": "v1.0.1/system/knulli-vi/fonts/DejaVuSans-BoldOblique.ttf",
+      "path": "v1.0.2/system/knulli-vi/fonts/DejaVuSans-BoldOblique.ttf",
       "sha256": "eb436dca0c2594b73d8b603b892e374fdfd8d885d25ffb4f18df4c4c0b49e50f",
       "size": 643292
     },
     {
-      "path": "v1.0.1/system/knulli-vi/fonts/DejaVuSans-Oblique.ttf",
+      "path": "v1.0.2/system/knulli-vi/fonts/DejaVuSans-Oblique.ttf",
       "sha256": "4af75fa16ee6d3ad43e1ecec41862c24954af26a55c6bb1ebb27bd486a50f5f4",
       "size": 635416
     },
     {
-      "path": "v1.0.1/system/knulli-vi/fonts/DejaVuSans.ttf",
+      "path": "v1.0.2/system/knulli-vi/fonts/DejaVuSans.ttf",
       "sha256": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
       "size": 757076
     },
     {
-      "path": "v1.0.1/system/knulli-vi/fonts/DejaVuSansCondensed-Bold.ttf",
+      "path": "v1.0.2/system/knulli-vi/fonts/DejaVuSansCondensed-Bold.ttf",
       "sha256": "38098d0b8edd8430a0f53fb2831b5d36037563a998a620d3c87a4d7591766d20",
       "size": 665028
     },
     {
-      "path": "v1.0.1/system/knulli-vi/fonts/DejaVuSansCondensed.ttf",
+      "path": "v1.0.2/system/knulli-vi/fonts/DejaVuSansCondensed.ttf",
       "sha256": "8550cd5ca1acb65a8fc7877c46939cd0b4d909f8e7bc1e24716873d918c5e549",
       "size": 680264
     },
     {
-      "path": "v1.0.1/system/knulli-vi/i18n/emulationstation2.mo",
-      "sha256": "659a28de64a1535ddf54469336917aaac93c98c31396dcf37d54a02a9c3392df",
-      "size": 92524
+      "path": "v1.0.2/system/knulli-vi/i18n/emulationstation2.mo",
+      "sha256": "532d49b7c06cdca33d3241d6472a19738b8c8f8f3ffe3aad926acefd7deefabe",
+      "size": 92663
     },
     {
-      "path": "v1.0.1/system/knulli-vi/i18n/emulationstation2.pristine.mo",
+      "path": "v1.0.2/system/knulli-vi/i18n/emulationstation2.pristine.mo",
       "sha256": "01b5b21bc7844b49ac258c5567675892b445ccc61f3b95eabf600a0ead1d7487",
       "size": 73285
     },
     {
-      "path": "v1.0.1/system/knulli-vi/icon/knulliviethoa.png",
+      "path": "v1.0.2/system/knulli-vi/icon/knulliviethoa.png",
       "sha256": "b84fb6787634c9ff4c3aa872f6d1b2d2a788ec05899ebda9b9da156043a18859",
       "size": 152022
     },
     {
-      "path": "v1.0.1/system/knulli-vi/lang/lang-vi.xml",
+      "path": "v1.0.2/system/knulli-vi/lang/art-book-next-vi.xml",
+      "sha256": "40c4061274090c17ed609001e66efbd0912f781f3067c7786604a41904bdae7c",
+      "size": 179
+    },
+    {
+      "path": "v1.0.2/system/knulli-vi/lang/lang-vi.xml",
       "sha256": "1bca7602567a9ac4cee0cff39cc1c12e27c66f252739c3baa9b780174434718b",
       "size": 3138
     },
     {
-      "path": "v1.0.1/system/knulli-vi/manual/notice-vi.pdf",
+      "path": "v1.0.2/system/knulli-vi/manual/notice-vi.pdf",
       "sha256": "4ede8ef2a616916de9bcfed191e28ca7b683fd14a444016c2bd4706df6988533",
       "size": 1202985
     },
     {
-      "path": "v1.0.1/system/knulli-vi/ota-update.py",
+      "path": "v1.0.2/system/knulli-vi/ota-update.py",
       "sha256": "00af461bee56ac033812f7b21f6e0185191f5d27ec28fcb2b3d486fb32a338a7",
       "size": 10447
     },
     {
-      "path": "v1.0.1/system/knulli-vi/patcher.py",
-      "sha256": "cad49d65ff7e5ae7b107d1fd6ff0a3c23e88d04c96887a18a65606c08a7e8dfa",
-      "size": 57960
+      "path": "v1.0.2/system/knulli-vi/patcher.py",
+      "sha256": "4bac3a45bf5b231e28809c2094ca4516acdee17f1a0ace6fe72e562b4fa04b63",
+      "size": 79813
     }
   ],
   "kid": "kv1",
-  "signature": "layZS73vpypjkPhEYiGdXJA0nVI6IBrdAuasrPn321BTc_mDEOEyrU0crxqEgq6oCKZeKyB9XIItYPv95aSUDw",
-  "version": "1.0.1"
+  "signature": "wEe3UMclOuhFP0SC_MjupjpfQBRMWC32HpF5kjobd_7N7eCPSsnzAmmh82AHk41THSP3MjMYnvWranGS2ZGjBQ",
+  "version": "1.0.2"
 }
